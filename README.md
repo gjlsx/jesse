@@ -1,5 +1,8 @@
 # Jesse Project Template
 
+#jess文档 请参阅：
+https://docs.jesse.trade/docs/getting-started/
+
 This is template from which you can create your own Jesse project. 
 
 ## Usage
