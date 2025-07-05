@@ -1,3 +1,5 @@
+
+
 from jesse.strategies import Strategy
 import jesse.indicators as ta
 from jesse import utils
@@ -66,9 +68,9 @@ class RSIStrategy(Strategy):
     
     def update_position(self):
         """
-        Update existing positions
-        If holding long and RSI is overbought, close position
-        If holding short and RSI is oversold, close position
+        更新现有仓位
+        如果持有多头且RSI超买，平仓
+        如果持有空头且RSI超卖，平仓
         """
         if self.is_long and self.rsi >= self.overbought_threshold:
             self.liquidate()
