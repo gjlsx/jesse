@@ -1,15 +1,14 @@
-
-
 from jesse.strategies import Strategy
 import jesse.indicators as ta
 from jesse import utils
 from datetime import datetime, time
 
-class MovingAverageStrategy(Strategy):
+class moveAverage(Strategy):
     """
     Multi-MA Dip Buying Strategy
     Uses 6 moving averages: 3, 6, 14, 21, 60, 120
-
+    Buys the dip when price retraces to MA support levels
+    Daily operation, starts at Beijing time 8:00
     """
     
     def __init__(self):
@@ -58,7 +57,7 @@ class MovingAverageStrategy(Strategy):
         return current_time.hour == 8 and current_time.minute == 0
     
     def get_ma_support_level(self):
-        """Get moving average support level"""
+        """getMAsupport level"""
         ma_values = []
         
         # Safely get all MA values
@@ -122,12 +121,12 @@ class MovingAverageStrategy(Strategy):
         # Price is close to MA support level (within 1%)
         price_near_ma = abs(current_price - ma_support) / ma_support < 0.01
         
-        # Check if there's a falling pattern from above
+        # Check if falling from above to MA
         if len(self.candles) >= 2:
             prev_price = self.candles[-2][2]  # Previous candle's close price
             price_falling = current_price < prev_price
             
-            # Price falling from above to near MA
+            # Price falling from above to MA near
             return price_near_ma and price_falling and current_price >= ma_support * 0.99
         
         return False

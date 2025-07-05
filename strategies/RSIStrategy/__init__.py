@@ -4,71 +4,71 @@ from jesse import utils
 
 class RSIStrategy(Strategy):
     """
-    RSI 均值回归策略
-    当RSI超卖时做多，当RSI超买时做空
+    RSI Mean Reversion Strategy
+    Go long when RSI is oversold, go short when RSI is overbought
     """
     
     def __init__(self):
         super().__init__()
-        # 策略参数
+        # Strategy parameters
         self.rsi_period = 14
         self.oversold_threshold = 30
         self.overbought_threshold = 70
-        self.position_size = 0.3  # 使用30%的余额
+        self.position_size = 0.3  # Use 30% of balance
     
     @property
     def rsi(self):
-        """RSI指标"""
+        """RSI indicator"""
         return ta.rsi(self.candles, period=self.rsi_period)
     
     def should_long(self) -> bool:
         """
-        判断是否应该做多
-        RSI 超卖时做多
+        Determine if should go long
+        Go long when RSI is oversold
         """
         return self.rsi <= self.oversold_threshold
     
     def should_short(self) -> bool:
         """
-        判断是否应该做空
-        RSI 超买时做空
+        Determine if should go short
+        Go short when RSI is overbought
         """
         return self.rsi >= self.overbought_threshold
     
     def should_cancel_entry(self) -> bool:
         """
-        判断是否应该取消入场订单
-        如果RSI回到中性区域，取消入场订单
+        Determine if should cancel entry orders
+        Cancel entry orders if RSI returns to neutral zone
         """
         return 40 < self.rsi < 60
     
     def go_long(self):
         """
-        执行做多操作
+        Execute long position
         """
         qty = utils.size_to_qty(self.balance * self.position_size, self.price)
         self.buy = qty, self.price
-        # 设置止损（在入场价格下方2%）
+        # Set stop loss (2% below entry price)
         self.stop_loss = qty, self.price * 0.98
-        # 设置止盈（在入场价格上方3%）
+        # Set take profit (3% above entry price)
         self.take_profit = qty, self.price * 1.03
     
     def go_short(self):
         """
-        执行做空操作
+        Execute short position
         """
         qty = utils.size_to_qty(self.balance * self.position_size, self.price)
         self.sell = qty, self.price
-        # 设置止损（在入场价格上方2%）
+        # Set stop loss (2% above entry price)
         self.stop_loss = qty, self.price * 1.02
-        # 设置止盈（在入场价格下方3%）
+        # Set take profit (3% below entry price)
         self.take_profit = qty, self.price * 0.97
     
     def update_position(self):
         """
-        更新现有仓位
-        如果持有多头且RSI超买，平仓
-        如果持有空头且RSI超卖，平仓
+        Update existing positions
+        If holding long and RSI is overbought, close position
+        If holding short and RSI is oversold, close position
         """
         if self.is_long and self.rsi >= self.overbought_threshold:
             self.liquidate()

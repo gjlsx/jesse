@@ -1,0 +1,36 @@
+[MASTER]
+# 禁用所有检查
+disable=all
+
+[MESSAGES CONTROL]
+# 禁用所有消息
+disable=all
+
+[REPORTS]
+# 禁用报告
+output-format=text
+reports=no
+
+[BASIC]
+# 禁用基本检查
+good-names=i,j,k,ex,Run,_,id
+
+[FORMAT]
+# 禁用格式检查
+max-line-length=1000
+ignore-long-lines=.*
+ignore-bad-continuation=.*
+ignore-missing-final-newline=.*
+ignore-bad-whitespace=.*
+ignore-trailing-whitespace=.*
+
+[SIMILARITIES]
+# 禁用相似性检查
+min-similarity-lines=1000
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=yes
+
+[MISCELLANEOUS]
+# 禁用其他检查
+notes= 

@@ -9,11 +9,20 @@
 - [环境配置](environment-setup.md) - 各操作系统环境配置详解
 - [Docker 部署](docker.md) - 使用 Docker 快速部署 Jesse
 - [更新升级](update.md) - Jesse 版本更新方法
+- [API密钥设置](API_KEY_SETUP.md) - 交易所API密钥配置指南
 
 ### 核心功能
 - [配置说明](configuration.md) - 环境变量和应用设置详解
 - [策略开发](strategies.md) - 编写自定义交易策略
 - [回测分析](backtest.md) - 策略回测和结果分析
+
+### 策略开发
+- [抄底策略指南](DIP_BUYING_STRATEGY_GUIDE.md) - 移动平均线抄底策略详解
+- [策略修复指南](STRATEGY_FIXED.md) - 现货交易策略修复说明
+- [回测结果对比](BACKTEST_RESULTS_COMPARISON.md) - 策略性能对比分析
+
+### 项目维护
+- [中文注释翻译完成](TRANSLATION_COMPLETE.md) - 代码国际化总结报告
 
 ### 高级主题
 - [数据导入](import-candles.md) - 导入历史蜡烛图数据

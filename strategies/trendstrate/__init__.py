@@ -1,14 +1,11 @@
-
-
 from jesse.strategies import Strategy
 import jesse.indicators as ta
 from jesse import utils
 from datetime import datetime, time
 
-class MovingAverageStrategy(Strategy):
+class Trendstrade(Strategy):
     """
-    Multi-MA Dip Buying Strategy
-    Uses 6 moving averages: 3, 6, 14, 21, 60, 120
+    Trend Line Bounce Strategy
 
     """
     
@@ -103,7 +100,7 @@ class MovingAverageStrategy(Strategy):
         if not valid_mas:
             return None
         
-        # Return the MA closest to current price as support level
+        # Find the MA closest to current price as support level
         current_price = self.price
         closest_ma = min(valid_mas, key=lambda x: abs(x - current_price))
         return closest_ma
@@ -119,15 +116,15 @@ class MovingAverageStrategy(Strategy):
         if ma_support is None:
             return False
         
-        # Price is close to MA support level (within 1%)
+        # Price is close to support level (within 1%)
         price_near_ma = abs(current_price - ma_support) / ma_support < 0.01
         
-        # Check if there's a falling pattern from above
+        # Check if there's a falling and bouncing pattern
         if len(self.candles) >= 2:
-            prev_price = self.candles[-2][2]  # Previous candle's close price
+            prev_price = self.candles[-2][2]  # Previous candle's high
             price_falling = current_price < prev_price
             
-            # Price falling from above to near MA
+            # Price was falling and now bouncing above MA
             return price_near_ma and price_falling and current_price >= ma_support * 0.99
         
         return False
@@ -153,7 +150,7 @@ class MovingAverageStrategy(Strategy):
     def should_cancel_entry(self) -> bool:
         """
         Determine if should cancel entry orders
-        Cancel if price moves away from MA support level
+        Cancel if price moves too far from support level
         """
         if len(self.candles) < 2:
             return False
@@ -164,12 +161,12 @@ class MovingAverageStrategy(Strategy):
         if ma_support is None:
             return True
         
-        # Cancel if price moves more than 2% from MA support level
+        # Cancel if price moves more than 2% away from support level
         return abs(current_price - ma_support) / ma_support > 0.02
     
     def go_long(self):
         """
-        executego longoperation
+        Execute long position
         """
         # Calculate position size
         qty = utils.size_to_qty(self.balance * self.position_size, self.price)
@@ -185,21 +182,21 @@ class MovingAverageStrategy(Strategy):
     
     def go_short(self):
         """
-        This strategy doesn't go short
+        This strategy doesn't short
         """
         pass
     
     def update_position(self):
         """
         Update existing positions
-        Close position if price falls below all MAs
+        Close position if price falls below important MAs
         """
         if not self.is_long:
             return
         
         current_price = self.price
         
-        # Check if price falls below all major MAs
+        # Check if price is below important MAs
         ma_values = [
             self.ma14[-1] if len(self.ma14) > 0 else None,
             self.ma21[-1] if len(self.ma21) > 0 else None,
@@ -209,7 +206,7 @@ class MovingAverageStrategy(Strategy):
         valid_mas = [ma for ma in ma_values if ma is not None]
         
         if valid_mas:
-            # Close position if price falls below all MAs
+            # If price is below all important MAs, close position
             below_all_mas = all(current_price < ma for ma in valid_mas)
             if below_all_mas:
                 self.liquidate() 
