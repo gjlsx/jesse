@@ -32,10 +32,10 @@ class RSIStrategy(Strategy):
     
     def should_short(self) -> bool:
         """
-        Determine if should go short
-        Go short when RSI is overbought
+        Spot trading doesn't allow short positions
+        Always return False for spot exchange
         """
-        return self.rsi >= self.overbought_threshold
+        return False
     
     def should_cancel_entry(self) -> bool:
         """
@@ -57,14 +57,10 @@ class RSIStrategy(Strategy):
     
     def go_short(self):
         """
-        Execute short position
+        Spot trading doesn't support short positions
+        This method is not used in spot trading
         """
-        qty = utils.size_to_qty(self.balance * self.position_size, self.price)
-        self.sell = qty, self.price
-        # Set stop loss (2% above entry price)
-        self.stop_loss = qty, self.price * 1.02
-        # Set take profit (3% below entry price)
-        self.take_profit = qty, self.price * 0.97
+        pass
     
     def update_position(self):
         """

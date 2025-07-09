@@ -15,6 +15,7 @@
 - [配置说明](configuration.md) - 环境变量和应用设置详解
 - [策略开发](strategies.md) - 编写自定义交易策略
 - [回测分析](backtest.md) - 策略回测和结果分析
+- [CSV数据导入](CSV_DATA_IMPORT_GUIDE.md) - 历史价格数据导入指南
 
 ### 策略开发
 - [抄底策略指南](DIP_BUYING_STRATEGY_GUIDE.md) - 移动平均线抄底策略详解

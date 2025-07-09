@@ -17,6 +17,7 @@ All documentation has been properly organized into the `docs/` directory:
 - `strategies.md` - Strategy development
 - `backtest.md` - Backtesting analysis
 - `update.md` - Update procedures
+- `CSV_DATA_IMPORT_GUIDE.md` - CSV historical data import guide
 
 #### **Strategy Development** ✨
 - `DIP_BUYING_STRATEGY_GUIDE.md` - Dip buying strategy guide
@@ -36,8 +37,9 @@ All documentation has been properly organized into the `docs/` directory:
 - ✅ Proper file organization
 
 ### 📊 Final File Count:
-- **Documentation files**: 13 files in `docs/`
+- **Documentation files**: 14 files in `docs/`
 - **Strategy files**: 5 strategy modules (all English)
+- **Database modules**: 3 files (database_manager.py, test_import_csv.py, import_all_csv.py)
 - **Configuration files**: `.env`, `.gitignore`, etc.
 - **Root directory**: Clean and organized
 

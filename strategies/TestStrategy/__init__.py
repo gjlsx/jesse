@@ -1,13 +1,16 @@
+
+
 from jesse.strategies import Strategy
 import jesse.indicators as ta
 from jesse import utils
-from datetime import datetime, time
 
-class trendstrate(Strategy):
+class TestStrategy(Strategy):
     """
-    Trend Line Bounce Strategy
-
+    Consecutive Drop Buy + Consecutive Rise Sell Strategy
+    1. Buy in 5 days after 5 consecutive down days, keep buying if price doesn't exceed the opening price of the last down day
+    2. Sell in 5 days after 5 consecutive up days, until remaining 1/4 position
     """
+    
     def __init__(self):
         super().__init__()
         # Strategy parameters
@@ -76,24 +79,18 @@ class trendstrate(Strategy):
     def should_long(self) -> bool:
         """
         Determine if should go long
-        Start buying on the 5th day of 5 consecutive down days, keep buying if price doesn't exceed the opening price of the last down day
+        Start buy phase after 5 consecutive down days, keep buying if price doesn't exceed the opening price of the last down day
         """
-        # Check if we are exactly on the 5th consecutive down day and start new buy phase
+        # Check if there are 5 consecutive down days, start new buy phase
         if self.is_consecutive_drop() and not self.buy_phase and not self.sell_phase:
-            # Check if today (current candle) is also a down day to confirm we're on the 5th consecutive down day
-            current_close = self.candles[-1][2]  # Current close price
-            current_open = self.candles[-1][1]   # Current open price
-
-            # Only start buying if current day is also down (confirming 5th consecutive down day)
-            if current_close < current_open:
-                self.buy_phase = True
-                self.buy_day_count = 0
-                self.sell_phase = False
-                self.sell_day_count = 0
-                # Record the opening price of the last down day (5th day)
-                self.last_drop_open_price = self.candles[-1][1]  # Current day's opening price
-                return True
-
+            self.buy_phase = True
+            self.buy_day_count = 0
+            self.sell_phase = False
+            self.sell_day_count = 0
+            # Record the opening price of the last down day
+            self.last_drop_open_price = self.candles[-self.consecutive_days][1]
+            return True
+        
         # In buy phase and not reached maximum position
         if self.buy_phase:
             current_ratio = self.get_current_position_ratio()
@@ -101,11 +98,11 @@ class trendstrate(Strategy):
             if current_ratio >= self.max_position_ratio:
                 self.buy_phase = False
                 return False
-
+            
             # Check if price doesn't exceed the opening price of the last down day
             if self.price <= self.last_drop_open_price:
                 return True
-
+        
         return False
     
     def should_short(self) -> bool:
@@ -124,7 +121,7 @@ class trendstrate(Strategy):
     def go_long(self):
         """
         Execute long operation
-        Start buying on the 5th consecutive down day, keep buying if price doesn't exceed the opening price of the 5th down day
+        Buy in 5 days, keep buying if price doesn't exceed the opening price of the last down day
         """
         try:
             # Calculate daily buy amount (15% of TOTAL portfolio value)
@@ -231,3 +228,4 @@ class trendstrate(Strategy):
         except Exception as e:
             print(f"Update position error: {e}")
     
+ 
