@@ -1,0 +1,2 @@
+# PostgreSQL 测试项目依赖
+psycopg2-binary>=2.9.0

@@ -122,3 +122,5 @@ def delete_exchange_api_keys(exchange_api_key_id: str) -> JSONResponse:
         'status': 'success',
         'message': 'API key has been deleted successfully.'
     }, status_code=200)
+
+# 连接数据库并查看表结构

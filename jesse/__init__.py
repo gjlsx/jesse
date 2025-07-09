@@ -1,7 +1,8 @@
 import warnings
 from typing import Optional, Dict, Set
 import click
-import pkg_resources
+import os
+# import pkg_resources  # 开发模式注释掉
 from fastapi import BackgroundTasks, Query, Header
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.responses import FileResponse
@@ -34,7 +35,8 @@ except ModuleNotFoundError:
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # get the jesse directory
-JESSE_DIR = pkg_resources.resource_filename(__name__, '')
+# JESSE_DIR = pkg_resources.resource_filename(__name__, '')  # 原来的代码
+JESSE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 # load homepage
@@ -173,7 +175,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)):
 
 # create a Click group
 @click.group()
-@click.version_option(pkg_resources.get_distribution("jesse").version)
+# @click.version_option(version)  # 跳过版本检查，开发模式
 def cli() -> None:
     pass
 
@@ -192,15 +194,15 @@ def install_live(strict: bool) -> None:
 def run() -> None:
     # Display welcome message
     welcome_message = """
-     ██╗███████╗███████╗███████╗███████╗
-     ██║██╔════╝██╔════╝██╔════╝██╔════╝
-     ██║█████╗  ███████╗███████╗█████╗  
-██   ██║██╔══╝  ╚════██║╚════██║██╔══╝  
-╚█████╔╝███████╗███████║███████║███████╗
- ╚════╝ ╚══════╝╚══════╝╚══════╝╚══════╝
-                                        
+███╗   ███╗██╗      ██████╗ ██╗   ██╗███████╗
+████╗ ████║██║     ██╔═══██╗██║   ██║██╔════╝
+██╔████╔██║██║     ██║   ██║██║   ██║█████╗  
+██║╚██╔╝██║██║     ██║   ██║╚██╗ ██╔╝██╔══╝  
+██║ ╚═╝ ██║███████╗╚██████╔╝ ╚████╔╝ ███████╗
+╚═╝     ╚═╝╚══════╝ ╚═════╝   ╚═══╝  ╚══════╝
     """
-    version = pkg_resources.get_distribution("jesse").version
+    # version = pkg_resources.get_distribution("jesse").version  # 原来的代码
+    version = "1.9.8"  # 开发模式固定版本
     print(welcome_message)
     print(f"Main Framework Version: {version}")
     
