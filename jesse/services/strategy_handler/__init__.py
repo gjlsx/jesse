@@ -20,10 +20,10 @@ def generate(name: str) -> JSONResponse:
     shutil.copytree(f'{dirname}/ExampleStrategy', path)
 
     # replace 'ExampleStrategy' with the name of the new strategy
-    with open(f"{path}/__init__.py", "rt") as fin:
+    with open(f"{path}/__init__.py", "rt", encoding='utf-8') as fin:
         data = fin.read()
         data = data.replace('ExampleStrategy', name)
-    with open(f"{path}/__init__.py", "wt") as fin:
+    with open(f"{path}/__init__.py", "wt", encoding='utf-8') as fin:
         fin.write(data)
     # return the location of generated strategy directory
     return JSONResponse({
@@ -60,7 +60,7 @@ def get_strategy(name: str) -> JSONResponse:
             'message': f'Strategy "{name}" does not exist.'
         }, status_code=404)
 
-    with open(f"{path}/__init__.py", "rt") as fin:
+    with open(f"{path}/__init__.py", "rt", encoding='utf-8') as fin:
         content = fin.read()
 
     return JSONResponse({
@@ -79,7 +79,7 @@ def save_strategy(name: str, content: str) -> JSONResponse:
             'message': f'Strategy "{name}" does not exist.'
         }, status_code=404)
 
-    with open(f"{path}/__init__.py", "wt") as fin:
+    with open(f"{path}/__init__.py", "wt", encoding='utf-8') as fin:
         fin.write(content)
 
     return JSONResponse({

@@ -222,7 +222,8 @@ Jesse采用现代化的Web架构，基于uvicorn + FastAPI + GUI的设计：
 #### 开发模式启动
 ```bash
 # 在Jesse项目目录中执行
-python -c "import sys; sys.path.insert(0, '../jesse'); import jesse; jesse.cli()" run
+PS D:\work\aiwork\jesse> python jesse/__init__.py run执行__init__.py
+#python -c "import sys; sys.path.insert(0, '../jesse'); import jesse; #jesse.cli()" run
 ```
 
 #### 启动步骤

@@ -247,7 +247,7 @@ def file_exists(path: str) -> bool:
 
 
 def clear_file(path: str) -> None:
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write('')
 
 
@@ -331,7 +331,7 @@ def get_strategy_class(strategy_name: str):
             if module:
                 strategy_file = os.path.join('strategies', strategy_name, '__init__.py')
                 if os.path.exists(strategy_file):
-                    with open(strategy_file, 'r') as f:
+                    with open(strategy_file, 'r', encoding='utf-8') as f:
                         content = f.read()
                     
                     # Find the class definition
@@ -342,7 +342,7 @@ def get_strategy_class(strategy_name: str):
                         if old_class_name != strategy_name:
                             # Replace the class name in the file
                             new_content = re.sub(f'class {old_class_name}', f'class {strategy_name}', content)
-                            with open(strategy_file, 'w') as f:
+                            with open(strategy_file, 'w', encoding='utf-8') as f:
                                 f.write(new_content)
                             
                             # Reload the module to get the updated class

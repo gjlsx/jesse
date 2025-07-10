@@ -24,7 +24,7 @@ def tradingview_logs(study_name: str) -> str:
 
     path = f'storage/trading-view-pine-editor/{jh.get_session_id()}.txt'.replace(":", "-")
     os.makedirs('./storage/trading-view-pine-editor', exist_ok=True)
-    with open(path, 'w+') as outfile:
+    with open(path, 'w+', encoding='utf-8') as outfile:
         outfile.write(tv_text)
 
     return path

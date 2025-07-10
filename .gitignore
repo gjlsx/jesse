@@ -17,6 +17,7 @@ parts/
 sdist/
 var/
 wheels/
+temp/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -109,6 +110,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+storage/*
+storage/temp
+jesse/storage/*
 
 # Spyder project settings
 .spyderproject

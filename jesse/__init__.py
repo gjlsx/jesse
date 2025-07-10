@@ -2,6 +2,10 @@ import warnings
 from typing import Optional, Dict, Set
 import click
 import os
+import sys
+
+# Add current directory to Python path for development mode
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # import pkg_resources  # 开发模式注释掉
 from fastapi import BackgroundTasks, Query, Header
 from fastapi.responses import JSONResponse, FileResponse
@@ -293,3 +297,7 @@ if jh.has_live_trade_plugin():
 # Static Files (Must be loaded at the end to prevent overlapping with API endpoints)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 fastapi_app.mount("/", StaticFiles(directory=f"{JESSE_DIR}/static"), name="static")
+
+#@cli.command()def run() -> None:但是缺少执行入口，所以需要：
+if __name__ == '__main__':
+    cli()  # 调用 Click 命令行处理器，add by wind

@@ -26,7 +26,7 @@ def _init_main_logger():
 
     new_logger = logging.getLogger(jh.app_mode())
     new_logger.setLevel(logging.INFO)
-    new_logger.addHandler(logging.FileHandler(filename, mode='w'))
+    new_logger.addHandler(logging.FileHandler(filename, mode='w', encoding='utf-8'))
     LOGGERS[jh.app_mode()] = new_logger
 
 
@@ -36,7 +36,7 @@ def create_logger_file(name):
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
     new_logger = logging.getLogger(name)
     new_logger.setLevel(logging.INFO)
-    new_logger.addHandler(logging.FileHandler(log_file, mode='a'))
+    new_logger.addHandler(logging.FileHandler(log_file, mode='a', encoding='utf-8'))
     LOGGERS[name] = new_logger
 
 
@@ -129,7 +129,7 @@ def log_exchange_message(exchange, message):
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
         new_logger = logging.getLogger(logger_name)
         new_logger.setLevel(logging.INFO)
-        new_logger.addHandler(logging.FileHandler(log_file, mode='w'))
+        new_logger.addHandler(logging.FileHandler(log_file, mode='w', encoding='utf-8'))
         LOGGERS[logger_name] = new_logger
 
     LOGGERS[logger_name].info(message)

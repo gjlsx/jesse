@@ -28,13 +28,13 @@ def store_logs(export_json: bool = False, export_tradingview: bool = False, expo
         path = f'storage/json/{file_name}.json'
 
         os.makedirs('./storage/json', exist_ok=True)
-        with open(path, 'w+') as outfile:
+        with open(path, 'w+', encoding='utf-8') as outfile:
             def set_default(obj):
                 if isinstance(obj, set):
                     return list(obj)
                 raise TypeError
 
-            json.dump(trades_json, outfile, default=set_default)
+            json.dump(trades_json, outfile, default=set_default, ensure_ascii=False)
             result['json'] = path
 
     # store output for TradingView.com's pine-editor
@@ -46,7 +46,7 @@ def store_logs(export_json: bool = False, export_tradingview: bool = False, expo
         path = f'storage/csv/{file_name}.csv'
         os.makedirs('./storage/csv', exist_ok=True)
 
-        with open(path, 'w', newline='') as outfile:
+        with open(path, 'w', newline='', encoding='utf-8') as outfile:
             wr = csv.writer(outfile, quoting=csv.QUOTE_ALL)
 
             for i, t in enumerate(trades_json['trades']):

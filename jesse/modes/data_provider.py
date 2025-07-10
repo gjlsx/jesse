@@ -175,7 +175,7 @@ def get_backtest_logs(session_id: str):
     if not os.path.exists(path):
         return None
 
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf-8') as f:
         content = f.read()
 
     return jh.compressed_response(content)
