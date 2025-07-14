@@ -8,12 +8,12 @@ class moveAverage(Strategy):
     Multi-MA Dip Buying Strategy
     Uses 6 moving averages: 3, 6, 14, 21, 60, 120
     Buys the dip when price retraces to MA support levels
-    Daily operation, starts at Beijing time 8:00 
+    Daily operation, starts at Beijing time 8:00  
     """
     
     def __init__(self):
         super().__init__()
-        # Strategy parameters
+        # Strategy parameters 移动平均线策略
         self.ma_periods = [3, 6, 14, 21, 60, 120]  # 6 moving averages
         self.position_size = 0.3  # Use 30% of balance
         self.stop_loss_pct = 0.02  # 2% stop loss

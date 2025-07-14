@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>策略执行 - Jesse 自动化交易</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .status-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-section h2 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .status-section p {
+            color: #b45309;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .roadmap {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .roadmap h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .roadmap-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .roadmap-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .status-planned {
+            background: #e2e8f0;
+            border: 2px solid #cbd5e0;
+        }
+
+        .status-development {
+            background: #fbbf24;
+            border: 2px solid #f59e0b;
+        }
+
+        .status-completed {
+            background: #10b981;
+            border: 2px solid #059669;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .cta-section p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: #059669;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">← 返回Jesse主界面</a>
+        
+        <div class="header">
+            <h1>🚀 策略执行</h1>
+            <p>自动化交易的未来 - 让您的策略24/7不间断运行</p>
+        </div>
+
+        <div class="status-section">
+            <h2>🚧 开发中</h2>
+            <p>策略执行功能正在积极开发中，将为您带来前所未有的自动化交易体验！</p>
+            <p><strong>预计发布时间：</strong> 2025年第二季度</p>
+        </div>
+
+        <div class="main-content">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748; font-size: 2.5rem;">核心功能特性</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">📈</span>
+                    <h3>TradingView 信号接入</h3>
+                    <p>直接接收TradingView的交易信号，实现策略信号的实时执行。支持Webhook和Pine Script信号推送。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🏦</span>
+                    <h3>多交易所支持</h3>
+                    <p>目前支持币安(Binance)，后续将扩展至更多主流交易所，包括OKX、Bybit、Huobi等。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🤖</span>
+                    <h3>智能风控系统</h3>
+                    <p>内置多层风控机制，包括仓位管理、止损止盈、最大回撤控制等，确保资金安全。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>实时监控</h3>
+                    <p>提供实时的交易监控界面，包括持仓状态、盈亏情况、交易历史等关键信息。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🔔</span>
+                    <h3>智能通知</h3>
+                    <p>支持多种通知方式，包括邮件、微信、Telegram等，及时了解交易状态。</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>详细报告</h3>
+                    <p>生成详细的交易报告和绩效分析，帮助您优化交易策略和风险管理。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="roadmap">
+            <h2>🗓️ 开发路线图</h2>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-status status-completed"></div>
+                <div>
+                    <strong>基础架构设计</strong> - 完成策略执行引擎的核心架构设计
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-status status-development"></div>
+                <div>
+                    <strong>币安API集成</strong> - 正在开发币安交易所的API集成和订单管理
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-status status-development"></div>
+                <div>
+                    <strong>TradingView信号接收</strong> - 开发Webhook接收器和信号解析器
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-status status-planned"></div>
+                <div>
+                    <strong>风控系统</strong> - 实现多层风控机制和资金管理系统
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-status status-planned"></div>
+                <div>
+                    <strong>监控界面</strong> - 开发实时监控和管理界面
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="roadmap-status status-planned"></div>
+                <div>
+                    <strong>多交易所扩展</strong> - 添加更多交易所支持
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>🎯 敬请期待</h2>
+            <p>策略执行功能将彻底改变您的交易方式，让自动化交易变得更加简单和可靠。</p>
+            <a href="mailto:support@jesse.trade" class="btn">联系我们获取更新</a>
+        </div>
+    </div>
+</body>
+</html>

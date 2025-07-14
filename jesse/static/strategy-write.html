@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-capo="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>策略编写 - Jesse</title>
+    <link rel="stylesheet" href="/_nuxt/entry.C7mwOTxA.css">
+    <style>
+        .strategy-write-container {
+            display: flex;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: #f9fafb;
+        }
+        
+        .strategy-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .strategy-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .strategy-item:hover {
+            background: #374151;
+        }
+
+        .strategy-item.selected {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .strategy-item.selected:hover {
+            background: #2563eb;
+        }
+
+        .strategy-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .strategy-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .status-indicator.status-new {
+            background: #6b7280;
+            color: white;
+        }
+
+        .status-indicator.status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-indicator.status-completed {
+            background: #10b981;
+            color: white;
+        }
+        
+        .strategy-item.active {
+            background: #3b82f6;
+        }
+        
+        .strategy-item.new {
+            background: #059669;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+        }
+        
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #047857;
+        }
+        
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+        
+        .strategy-form {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        
+        .strategy-editor {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .editor-content {
+            flex: 1;
+            padding: 24px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #1f2937;
+            color: #f9fafb;
+            overflow-y: auto;
+        }
+        
+        .status-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-generating {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+        
+        .back-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast提示样式 */
+        #toast-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 200px;
+            text-align: center;
+            animation: toastSlideIn 0.3s ease-out;
+        }
+
+        .toast.success {
+            background: rgba(16, 185, 129, 0.9);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.9);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .toast.info {
+            background: rgba(59, 130, 246, 0.9);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .toast.fadeOut {
+            animation: toastFadeOut 0.3s ease-in forwards;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+        }
+
+        /* 密码输入模态框样式 */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .password-modal-content {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 400px;
+            max-width: 90vw;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .password-modal-header {
+            padding: 24px 24px 16px;
+            text-align: center;
+            color: white;
+        }
+
+        .password-modal-header h3 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .password-modal-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .password-modal-body {
+            padding: 16px 24px 24px;
+        }
+
+        #password-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        #password-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #password-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .password-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .password-modal-actions .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .password-modal-actions .btn-primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #dc2626;
+        }
+
+        .password-modal-actions .btn-primary:hover {
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .password-modal-actions .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .password-modal-actions .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="strategy-write-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <h3>📝 策略列表</h3>
+            <ul class="strategy-list" id="strategy-list">
+                <li class="strategy-item new" onclick="createNewStrategy()">
+                    ➕ 新建策略
+                </li>
+                <!-- 策略列表将通过JavaScript动态生成 -->
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="header">
+                <h1 id="page-title">策略编写助手</h1>
+                <div class="header-actions">
+                    <a href="javascript:history.back()" class="back-link">← 返回</a>
+                    <button class="btn btn-primary" onclick="saveStrategy()">💾 保存</button>
+                    <button class="btn btn-success" onclick="generateStrategy()">🤖 AI生成</button>
+                </div>
+            </div>
+
+            <!-- Toast提示容器 -->
+            <div id="toast-container"></div>
+
+            <!-- 密码输入模态框 -->
+            <div id="password-modal" class="password-modal" style="display: none;">
+                <div class="password-modal-content">
+                    <div class="password-modal-header">
+                        <h3>🔐 Jesse认证</h3>
+                        <p>请输入Jesse密码以继续操作</p>
+                    </div>
+                    <div class="password-modal-body">
+                        <input type="password" id="password-input" placeholder="默认密码：test" value="test">
+                        <div class="password-modal-actions">
+                            <button class="btn btn-primary" onclick="confirmPassword()">确认</button>
+                            <button class="btn btn-secondary" onclick="cancelPassword()">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 消息提示区域 -->
+            <div id="message-container" class="message-container"></div>
+            
+            <div class="content-area">
+                <!-- 策略表单 -->
+                <div class="strategy-form">
+                    <div class="form-group">
+                        <label class="form-label">策略名称（英文）</label>
+                        <input type="text" class="form-input" id="strategy-name" placeholder="例如: MyTradingStrategy">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">策略描述（中文/英文）</label>
+                        <textarea class="form-input form-textarea" id="strategy-description" 
+                                placeholder="请详细描述您想要的交易策略，例如：
+基于RSI指标的策略，当RSI低于30时买入，高于70时卖出...
+或者：
+移动平均线交叉策略，使用5日和20日均线..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">状态</label>
+                        <span class="status-indicator status-pending" id="strategy-status">待编写</span>
+                    </div>
+                </div>
+                
+                <!-- 策略编辑器 -->
+                <div class="strategy-editor">
+                    <div class="editor-header">
+                        <h3>策略代码</h3>
+                        <span id="file-path">strategtxt/</span>
+                    </div>
+                    <div class="editor-content" id="strategy-code">
+                        # 策略代码将在这里显示
+                        # 您可以直接编辑或使用AI生成
+                        
+                        from jesse.strategies import Strategy
+                        import jesse.indicators as ta
+                        
+                        class MyStrategy(Strategy):
+                            def should_long(self) -> bool:
+                                # 买入条件
+                                return False
+                                
+                            def should_short(self) -> bool:
+                                # 卖出条件  
+                                return False
+                                
+                            def go_long(self):
+                                # 执行买入
+                                qty = 1
+                                self.buy = qty, self.price
+                                
+                            def go_short(self):
+                                # 执行卖出
+                                qty = 1
+                                self.sell = qty, self.price
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 策略编写应用
+        class StrategyWriteApp {
+            constructor() {
+                this.strategies = [];
+                this.currentStrategy = null;
+                this.init();
+            }
+            
+            async init() {
+                await this.loadStrategies();
+                this.renderStrategyList();
+            }
+            
+            async loadStrategies() {
+                try {
+                    // 模拟加载策略列表
+                    this.strategies = [
+                        {
+                            name: 'RSIStrategy',
+                            description: 'RSI指标策略，超买超卖信号',
+                            status: 'success',
+                            content: '# RSI策略代码...'
+                        },
+                        {
+                            name: 'MAStrategy', 
+                            description: '移动平均线交叉策略',
+                            status: 'pending',
+                            content: '# 待生成...'
+                        }
+                    ];
+                } catch (error) {
+                    console.error('加载策略失败:', error);
+                }
+            }
+            
+            renderStrategyList() {
+                const container = document.getElementById('strategy-list');
+                const newButton = container.querySelector('.new');
+                
+                // 清除现有策略项（保留新建按钮）
+                const existingItems = container.querySelectorAll('.strategy-item:not(.new)');
+                existingItems.forEach(item => item.remove());
+                
+                // 添加策略项
+                this.strategies.forEach(strategy => {
+                    const item = document.createElement('li');
+                    item.className = 'strategy-item';
+                    item.textContent = strategy.name;
+                    item.onclick = () => this.selectStrategy(strategy);
+                    container.appendChild(item);
+                });
+            }
+            
+            selectStrategy(strategy) {
+                this.currentStrategy = strategy;
+                
+                // 更新UI
+                document.getElementById('strategy-name').value = strategy.name;
+                document.getElementById('strategy-description').value = strategy.description;
+                document.getElementById('strategy-code').textContent = strategy.content;
+                document.getElementById('file-path').textContent = `strategtxt/${strategy.name}.txt`;
+                
+                // 更新状态
+                const statusElement = document.getElementById('strategy-status');
+                statusElement.className = `status-indicator status-${strategy.status}`;
+                statusElement.textContent = this.getStatusText(strategy.status);
+                
+                // 更新选中状态
+                document.querySelectorAll('.strategy-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+            
+            getStatusText(status) {
+                const statusMap = {
+                    'pending': '待编写',
+                    'generating': '生成中',
+                    'success': '已完成',
+                    'error': '生成失败'
+                };
+                return statusMap[status] || '未知';
+            }
+        }
+        
+        // 全局函数
+        function createNewStrategy() {
+            document.getElementById('strategy-name').value = '';
+            document.getElementById('strategy-description').value = '';
+            document.getElementById('strategy-code').textContent = '# 新策略代码将在这里生成...';
+            document.getElementById('file-path').textContent = 'strategtxt/';
+            
+            const statusElement = document.getElementById('strategy-status');
+            statusElement.className = 'status-indicator status-pending';
+            statusElement.textContent = '待编写';
+        }
+        
+        async function saveStrategy() {
+            const name = document.getElementById('strategy-name').value;
+            const description = document.getElementById('strategy-description').value;
+
+            if (!name || !description) {
+                showToast('请填写策略名称和描述', 'error');
+                return;
+            }
+
+            try {
+                // 确保已认证
+                const authToken = await ensureAuthenticated();
+
+                const response = await fetch('/strategy-docs/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authToken
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showToast('✅ 策略已保存到 strategtxt 目录', 'success');
+
+                    // 更新当前策略名称
+                    currentStrategyName = name;
+
+                    // 重新加载策略列表
+                    setTimeout(() => {
+                        loadStrategies();
+                    }, 500); // 延迟500ms确保服务器已处理完成
+                } else {
+                    showToast('❌ 保存失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showToast('❌ 保存失败: ' + error.message, 'error');
+            }
+        }
+        
+        async function generateStrategy() {
+            const name = document.getElementById('strategy-name').value;
+            const description = document.getElementById('strategy-description').value;
+
+            if (!name || !description) {
+                showToast('请填写策略名称和描述', 'error');
+                return;
+            }
+
+            // 更新状态为生成中
+            const statusElement = document.getElementById('strategy-status');
+            statusElement.className = 'status-indicator status-generating';
+            statusElement.textContent = '生成中...';
+
+            try {
+                // 确保已认证
+                const authToken = await ensureAuthenticated();
+
+                const response = await fetch('/strategy-docs/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authToken
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    statusElement.className = 'status-indicator status-generating';
+                    statusElement.textContent = `已加入队列 (预计${result.data.estimated_time})`;
+
+                    document.getElementById('strategy-code').textContent =
+                        `# 策略已加入AI生成队列\n# 队列位置: ${result.data.queue_position}\n# 预计时间: ${result.data.estimated_time}\n\n# 请稍后刷新查看生成结果...`;
+
+                    showToast('🤖 策略已加入AI生成队列，请稍后查看结果', 'success', 3000);
+                } else {
+                    statusElement.className = 'status-indicator status-error';
+                    statusElement.textContent = '生成失败';
+                    showToast('❌ AI生成失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                statusElement.className = 'status-indicator status-error';
+                statusElement.textContent = '生成失败';
+                showToast('❌ AI生成失败: ' + error.message, 'error');
+            }
+        }
+
+        // 密码输入相关变量
+        let passwordResolve = null;
+        let passwordReject = null;
+
+        // 显示密码输入框
+        function showPasswordModal() {
+            return new Promise((resolve, reject) => {
+                passwordResolve = resolve;
+                passwordReject = reject;
+
+                const modal = document.getElementById('password-modal');
+                const input = document.getElementById('password-input');
+
+                modal.style.display = 'flex';
+                setTimeout(() => input.focus(), 100);
+
+                // 支持回车确认
+                input.onkeypress = function(e) {
+                    if (e.key === 'Enter') {
+                        confirmPassword();
+                    }
+                };
+            });
+        }
+
+        // 确认密码
+        function confirmPassword() {
+            const password = document.getElementById('password-input').value;
+            hidePasswordModal();
+
+            if (password && passwordResolve) {
+                passwordResolve(password);
+            } else if (passwordReject) {
+                passwordReject(new Error('密码不能为空'));
+            }
+        }
+
+        // 取消密码输入
+        function cancelPassword() {
+            hidePasswordModal();
+            if (passwordReject) {
+                passwordReject(new Error('用户取消输入'));
+            }
+        }
+
+        // 隐藏密码输入框
+        function hidePasswordModal() {
+            const modal = document.getElementById('password-modal');
+            modal.style.display = 'none';
+            passwordResolve = null;
+            passwordReject = null;
+        }
+
+        // Toast提示函数
+        function showToast(message, type = 'info', duration = 2000) {
+            const container = document.getElementById('toast-container');
+
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+
+            // 添加到容器
+            container.appendChild(toast);
+
+            // 设置自动消失
+            setTimeout(() => {
+                toast.classList.add('fadeOut');
+                setTimeout(() => {
+                    if (container.contains(toast)) {
+                        container.removeChild(toast);
+                    }
+                }, 300); // 等待动画完成
+            }, duration);
+        }
+
+        // 获取认证token的函数
+        function getAuthToken() {
+            // 从localStorage获取token
+            let token = localStorage.getItem('auth_token');
+
+            if (!token) {
+                // 尝试从cookie获取（Nuxt.js可能存储在这里）
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'auth_token' || name.includes('auth')) {
+                        token = decodeURIComponent(value);
+                        break;
+                    }
+                }
+            }
+
+            // 如果还是没有token，尝试从主页面获取
+            if (!token && window.opener) {
+                try {
+                    token = window.opener.localStorage.getItem('auth_token');
+                } catch (e) {
+                    console.log('无法从父页面获取token:', e);
+                }
+            }
+
+            return token || '';
+        }
+
+        // 认证函数
+        async function authenticate(password) {
+            try {
+                const response = await fetch('/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.auth_token) {
+                    // 存储token
+                    localStorage.setItem('auth_token', result.auth_token);
+                    return result.auth_token;
+                } else {
+                    throw new Error(result.message || '认证失败');
+                }
+            } catch (error) {
+                console.error('认证错误:', error);
+                throw error;
+            }
+        }
+
+        // 检查认证状态
+        async function ensureAuthenticated() {
+            let token = getAuthToken();
+
+            if (!token) {
+                try {
+                    // 显示漂亮的密码输入框
+                    const password = await showPasswordModal();
+                    token = await authenticate(password);
+                    showToast('✅ 认证成功', 'success', 1000);
+                } catch (error) {
+                    if (error.message === '用户取消输入') {
+                        showToast('❌ 操作已取消', 'error');
+                    } else {
+                        showToast('❌ 认证失败: ' + error.message, 'error');
+                    }
+                    throw error;
+                }
+            }
+
+            return token;
+        }
+
+        // 当前编辑的策略名称
+        let currentStrategyName = null;
+
+        // 加载策略列表
+        async function loadStrategies() {
+            try {
+                const authToken = getAuthToken();
+                if (!authToken) {
+                    // 如果没有token，尝试认证
+                    try {
+                        await ensureAuthenticated();
+                    } catch (e) {
+                        return; // 认证失败，不加载列表
+                    }
+                }
+
+                const response = await fetch('/strategy-docs/list', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': getAuthToken()
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        updateStrategyList(result.data || []);
+                    } else {
+                        console.log('获取策略列表失败:', result.message);
+                    }
+                } else {
+                    console.log('策略列表API调用失败:', response.status);
+                }
+            } catch (error) {
+                console.log('加载策略列表失败:', error);
+            }
+        }
+
+        // 更新策略列表UI
+        function updateStrategyList(strategies) {
+            const listElement = document.getElementById('strategy-list');
+
+            // 清空现有列表（保留新建按钮）
+            const newButton = listElement.querySelector('.strategy-item.new');
+            listElement.innerHTML = '';
+            if (newButton) {
+                listElement.appendChild(newButton);
+            }
+
+            // 添加策略项
+            strategies.forEach(strategy => {
+                const item = document.createElement('li');
+                item.className = 'strategy-item';
+                item.dataset.strategyName = strategy.name; // 添加数据属性用于识别
+
+                // 如果是当前编辑的策略，添加选中状态
+                if (currentStrategyName === strategy.name) {
+                    item.classList.add('selected');
+                }
+
+                item.innerHTML = `
+                    <div class="strategy-name">${strategy.name}</div>
+                    <div class="strategy-status">${strategy.status || '待编辑'}</div>
+                `;
+                item.onclick = () => selectStrategy(strategy);
+                listElement.appendChild(item);
+            });
+
+            console.log(`已加载 ${strategies.length} 个策略，当前编辑: ${currentStrategyName}`);
+        }
+
+        // 选择策略
+        function selectStrategy(strategy) {
+            // 更新当前策略名称
+            currentStrategyName = strategy.name;
+
+            // 更新表单
+            document.getElementById('strategy-name').value = strategy.name;
+            document.getElementById('strategy-description').value = strategy.description || '';
+
+            // 更新状态显示
+            const statusElement = document.getElementById('strategy-status');
+            if (statusElement) {
+                statusElement.textContent = strategy.status || '待编辑';
+                statusElement.className = `status-indicator ${getStatusClass(strategy.status)}`;
+            }
+
+            // 更新选中状态
+            document.querySelectorAll('.strategy-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // 如果有策略代码，显示在代码区域
+            if (strategy.code) {
+                const codeElement = document.getElementById('strategy-code');
+                if (codeElement) {
+                    codeElement.textContent = strategy.code;
+                }
+            }
+
+            console.log(`已选择策略: ${strategy.name}`);
+        }
+
+        // 获取状态样式类
+        function getStatusClass(status) {
+            switch (status) {
+                case '已完成': return 'status-completed';
+                case '生成中': return 'status-generating';
+                case '失败': return 'status-error';
+                default: return 'status-pending';
+            }
+        }
+
+        // 创建新策略
+        function createNewStrategy() {
+            // 清空当前策略名称
+            currentStrategyName = null;
+
+            // 清空表单
+            document.getElementById('strategy-name').value = '';
+            document.getElementById('strategy-description').value = '';
+
+            // 清空代码区域
+            const codeElement = document.getElementById('strategy-code');
+            if (codeElement) {
+                codeElement.textContent = '# 请先填写策略名称和描述，然后点击"AI生成策略"';
+            }
+
+            // 清除选中状态
+            document.querySelectorAll('.strategy-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // 重置状态
+            const statusElement = document.getElementById('strategy-status');
+            if (statusElement) {
+                statusElement.textContent = '新策略';
+                statusElement.className = 'status-indicator status-new';
+            }
+
+            console.log('创建新策略');
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            // 加载策略列表
+            loadStrategies();
+
+            // 设置定时刷新
+            setInterval(loadStrategies, 30000); // 每30秒刷新一次
+        });
+    </script>
+</body>
+</html>

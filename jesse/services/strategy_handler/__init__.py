@@ -51,41 +51,83 @@ def get_strategies() -> JSONResponse:
 
 
 def get_strategy(name: str) -> JSONResponse:
-    path = f'strategies/{name}'
-    exists = os.path.isdir(path)
+    try:
+        path = f'strategies/{name}'
+        exists = os.path.isdir(path)
 
-    if not exists:
+        if not exists:
+            return JSONResponse({
+                'status': 'error',
+                'message': f'Strategy "{name}" does not exist.'
+            }, status_code=404)
+
+        with open(f"{path}/__init__.py", "rt", encoding='utf-8') as fin:
+            content = fin.read()
+
+        return JSONResponse({
+            'status': 'success',
+            'content': content
+        })
+    except FileNotFoundError:
         return JSONResponse({
             'status': 'error',
-            'message': f'Strategy "{name}" does not exist.'
+            'message': f'Strategy file "{name}/__init__.py" not found.'
         }, status_code=404)
-
-    with open(f"{path}/__init__.py", "rt", encoding='utf-8') as fin:
-        content = fin.read()
-
-    return JSONResponse({
-        'status': 'success',
-        'content': content
-    })
+    except PermissionError:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Permission denied when reading strategy "{name}".'
+        }, status_code=403)
+    except UnicodeDecodeError:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Failed to decode strategy file "{name}" (encoding issue).'
+        }, status_code=500)
+    except Exception as e:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Failed to read strategy "{name}": {str(e)}'
+        }, status_code=500)
 
 
 def save_strategy(name: str, content: str) -> JSONResponse:
-    path = f'strategies/{name}'
-    exists = os.path.isdir(path)
+    try:
+        path = f'strategies/{name}'
+        exists = os.path.isdir(path)
 
-    if not exists:
+        if not exists:
+            return JSONResponse({
+                'status': 'error',
+                'message': f'Strategy "{name}" does not exist.'
+            }, status_code=404)
+
+        with open(f"{path}/__init__.py", "wt", encoding='utf-8') as fin:
+            fin.write(content)
+
+        return JSONResponse({
+            'status': 'success',
+            'message': f'Strategy "{name}" has been saved.'
+        })
+    except FileNotFoundError:
         return JSONResponse({
             'status': 'error',
-            'message': f'Strategy "{name}" does not exist.'
+            'message': f'Strategy directory "{name}" not found.'
         }, status_code=404)
-
-    with open(f"{path}/__init__.py", "wt", encoding='utf-8') as fin:
-        fin.write(content)
-
-    return JSONResponse({
-        'status': 'success',
-        'message': f'Strategy "{name}" has been saved.'
-    })
+    except PermissionError:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Permission denied when saving strategy "{name}".'
+        }, status_code=403)
+    except OSError as e:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'File system error when saving strategy "{name}": {str(e)}'
+        }, status_code=500)
+    except Exception as e:
+        return JSONResponse({
+            'status': 'error',
+            'message': f'Failed to save strategy "{name}": {str(e)}'
+        }, status_code=500)
 
 
 def delete_strategy(name: str) -> JSONResponse:

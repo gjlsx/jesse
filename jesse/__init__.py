@@ -48,6 +48,21 @@ JESSE_DIR = os.path.dirname(os.path.abspath(__file__))
 async def index():
     return FileResponse(f"{JESSE_DIR}/static/index.html")
 
+# 策略文档页面路由
+@fastapi_app.get("/stratetxt")
+async def strategy_docs_page():
+    return FileResponse(f"{JESSE_DIR}/static/strategy-docs.html")
+
+# 策略编写页面路由
+@fastapi_app.get("/strategy-write")
+async def strategy_write_page():
+    return FileResponse(f"{JESSE_DIR}/static/strategy-write.html")
+
+# 策略执行页面路由
+@fastapi_app.get("/strategy-execute")
+async def strategy_execute_page():
+    return FileResponse(f"{JESSE_DIR}/static/strategy-execute.html")
+
 
 @fastapi_app.post("/terminate-all")
 async def terminate_all(authorization: Optional[str] = Header(None)):
@@ -265,6 +280,7 @@ from jesse.controllers.exchange_controller import router as exchange_router
 from jesse.controllers.backtest_controller import router as backtest_router
 from jesse.controllers.candles_controller import router as candles_router
 from jesse.controllers.strategy_controller import router as strategy_router
+from jesse.controllers.strategy_docs_controller import router as strategy_docs_router
 from jesse.controllers.auth_controller import router as auth_router
 from jesse.controllers.config_controller import router as config_router
 from jesse.controllers.notification_controller import router as notification_router
@@ -278,6 +294,7 @@ fastapi_app.include_router(exchange_router)
 fastapi_app.include_router(backtest_router)
 fastapi_app.include_router(candles_router)
 fastapi_app.include_router(strategy_router)
+fastapi_app.include_router(strategy_docs_router)
 fastapi_app.include_router(auth_router)
 fastapi_app.include_router(config_router)
 fastapi_app.include_router(notification_router)

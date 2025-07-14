@@ -1,7 +1,7 @@
 <div align="center">
 <br>
 <p align="center">
-<img src="assets/jesse-logo.png" alt="Jesse" height="72" />
+<img src="assets/jesse-logo.png" alt="lovemoney" height="72" />
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 </div>
 
-# Jesse
+# lovemoney
 [![PyPI](https://img.shields.io/pypi/v/jesse)](https://pypi.org/project/jesse)
 [![Downloads](https://pepy.tech/badge/jesse)](https://pepy.tech/project/jesse)
 [![Docker Pulls](https://img.shields.io/docker/pulls/salehmir/jesse)](https://hub.docker.com/r/salehmir/jesse)
@@ -18,15 +18,15 @@
 
 ---
 
-Jesse 是一个先进的加密货币交易框架，旨在**简化**您**研究**和定义**自己的交易策略**，用于回测、优化和实时交易。
+lovemoney 是一个先进的加密货币交易框架，旨在**简化**您**研究**和定义**自己的交易策略**，用于回测、优化和实时交易。
 
-## 什么是 Jesse？
-观看此视频快速了解 Jesse：
+## 什么是 lovemoney
+观看此视频快速了解 lovemoney
 
-[![Jesse Overview](https://img.youtube.com/vi/0EqN3OOqeJM/0.jpg)](https://www.youtube.com/watch?v=0EqN3OOqeJM)
+[![lovemoney Overview](https://img.youtube.com/vi/0EqN3OOqeJM/0.jpg)](https://www.youtube.com/watch?v=0EqN3OOqeJM)
 
-## 为什么选择 Jesse？
-简而言之，Jesse 比其他解决方案更**准确**，也更**简单**。
+## 为什么选择 lovemoney
+lovemoney 比其他解决方案更**准确**，也更**简单**。
 事实上，它如此简单，如果您已经了解 Python，您可以在**几分钟内**开始使用，而不是**几周或几个月**。
 
 ## 核心特性
@@ -47,7 +47,7 @@ Jesse 是一个先进的加密货币交易框架，旨在**简化**您**研究**
 - 🔧 **内置代码编辑器**：使用内置代码编辑器编写、编辑和调试您的策略。
 - 📺 **YouTube 频道**：Jesse 有一个 YouTube 频道，提供逐步讲解示例策略的屏幕录制教程。
 
-## 深入了解 Jesse 的功能
+## 深入了解 lovemoney 的功能
 
 ### 极其简单
 用极其简单的 Python 编写复杂的交易策略。访问 300+ 指标、多交易对/时间框架支持、现货/期货交易、部分成交和风险管理工具。专注于逻辑，而非样板代码。
@@ -111,10 +111,10 @@ def hyperparameters(self):
 
 ### 🚀 快速启动（开发模式）
 
-如果您有Jesse源码并想进行开发调试，可以直接运行而无需安装：
+如果您有lovemoney源码并想进行开发调试，可以直接运行而无需安装：
 
 #### 1. 准备工作环境
-确保您有一个Jesse项目目录（包含`strategies`和`storage`文件夹）：
+确保您有一个lovemoney项目目录（包含`strategies`和`storage`文件夹）：
 ```bash
 # 如果没有项目目录，创建一个
 mkdir my-jesse-project
@@ -134,8 +134,8 @@ REDIS_HOST=localhost
 REDIS_PASSWORD=your_password
 ```
 
-#### 3. 启动Jesse（开发模式）
-在您的Jesse项目目录中运行：
+#### 3. 启动（开发模式）
+在您的项目目录中运行：
 ```bash
 python -c "import sys; sys.path.insert(0, '../jesse'); import jesse; jesse.cli()" run
 ```
@@ -221,7 +221,7 @@ Jesse采用现代化的Web架构，基于uvicorn + FastAPI + GUI的设计：
 
 #### 开发模式启动
 ```bash
-# 在Jesse项目目录中执行
+# 在lovemoney项目目录中执行
 PS D:\work\aiwork\jesse> python jesse/__init__.py run执行__init__.py
 #python -c "import sys; sys.path.insert(0, '../jesse'); import jesse; #jesse.cli()" run
 ```
@@ -392,7 +392,7 @@ except peewee.OperationalError:
 
 ### 源码运行方式详解
 
-Jesse支持直接从源码运行，无需安装包，这对开发和调试非常有用：
+支持直接从源码运行，无需安装包，这对开发和调试非常有用：
 
 #### 命令详解
 ```bash
