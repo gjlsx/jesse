@@ -15,4 +15,4 @@ if response and response.choices and len(response.choices) > 0:
     print(content_text)
     print("--------------------")
 else:
-    print("响应中没有找到预期的内容。")
+    print("响应中没有找到预期的内容....。")
