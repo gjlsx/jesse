@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Jesse DB 测试脚本
-测试 jesse_db 数据库的连接和基本操作
+测试 jesse_db 数据库的连接和基本操作。 25.07.14
 """
 
 import psycopg2
