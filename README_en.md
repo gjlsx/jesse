@@ -118,7 +118,7 @@ documentation is **short yet very informative**.
 - [🎥 Youtube channel (screencast tutorials)](https://jesse.trade/youtube)
 - [🛟 Help center](https://jesse.trade/help)
 - [💬 Discord community](https://jesse.trade/discord)
-- [🤖 JesseGPT](https://jesse.trade/gpt) (Requires a free account)
+- [🤖 JesseGPT](https://jesse.trade/gpt) (Requires a free account) yes
 
 ## What's next?
 
