@@ -445,4 +445,9 @@ your-workspace/
 
 
 ## 免责声明
+## Commit and Push Workflow
+
+For details on how to correctly commit and push changes, please see the [commit and push workflow documentation](./commitreadme.md).
+
+## 免责声明
 本软件仅用于教育目的。使用本软件**风险自负**。作者和所有关联方对您的交易结果**不承担任何责任**。**不要冒险投入您害怕失去的资金**。代码中可能存在**错误** - 本软件**不提供任何保证**。
