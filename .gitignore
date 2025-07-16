@@ -150,3 +150,5 @@ cython_debug/
 testing-*.py
 /storage/full-reports/*.html
 /storage/logs/*
+
+# Local configuration files

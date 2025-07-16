@@ -14,7 +14,7 @@ from datetime import datetime
 JESSE_DB_CONFIG = {
     'host': 'localhost',
     'port': 5432,
-    'database': 'jesse_db',  # 使用 jesse_db 数据库
+    'database': 'jessedb',  # 使用 jessedb 数据库
     'user': 'wind',
     'password': 'gj'
 }

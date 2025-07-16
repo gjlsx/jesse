@@ -12,10 +12,97 @@ import sys
 DB_CONFIG = {
     'host': 'localhost',
     'port': 5432,
-    'database': 'jesse_db',  # 改为测试 jesse_db
+    'database': 'jessedb',  # 修正为实际存在的数据库名
     'user': 'wind',
     'password': 'gj'
 }
+
+# 连接到 postgres 默认数据库的配置（用于诊断）
+ADMIN_DB_CONFIG = {
+    'host': 'localhost',
+    'port': 5432,
+    'database': 'postgres',  # 连接到默认数据库
+    'user': 'wind',
+    'password': 'gj'
+}
+
+def diagnose_database():
+    """诊断数据库连接问题"""
+    print("🔍 开始诊断数据库连接问题...")
+    
+    # 1. 测试连接到默认 postgres 数据库
+    try:
+        print("\n1️⃣ 测试连接到 postgres 默认数据库...")
+        conn = psycopg2.connect(**ADMIN_DB_CONFIG)
+        cursor = conn.cursor()
+        
+        print("✅ 成功连接到 postgres 数据库")
+        
+        # 2. 查询所有数据库
+        print("\n2️⃣ 查询现有数据库:")
+        cursor.execute("SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;")
+        databases = cursor.fetchall()
+        
+        for db in databases:
+            if db[0] == 'jessedb':
+                print(f"✅ {db[0]} (目标数据库)")
+            else:
+                print(f"📄 {db[0]}")
+        
+        # 3. 检查 jessedb 是否存在
+        cursor.execute("SELECT 1 FROM pg_database WHERE datname = 'jessedb';")
+        jesse_db_exists = cursor.fetchone()
+        
+        if jesse_db_exists:
+            print("\n✅ jessedb 数据库存在")
+            
+            # 4. 检查用户权限
+            print("\n3️⃣ 检查用户 'wind' 的权限:")
+            cursor.execute("""
+                SELECT r.rolname, r.rolsuper, r.rolcreaterole, r.rolcreatedb, r.rolcanlogin
+                FROM pg_roles r 
+                WHERE r.rolname = 'wind';
+            """)
+            user_info = cursor.fetchone()
+            
+            if user_info:
+                print(f"用户: {user_info[0]}")
+                print(f"超级用户: {user_info[1]}")
+                print(f"可创建角色: {user_info[2]}")
+                print(f"可创建数据库: {user_info[3]}")
+                print(f"可登录: {user_info[4]}")
+            else:
+                print("❌ 用户 'wind' 不存在")
+        else:
+            print("\n❌ jessedb 数据库不存在")
+            
+        cursor.close()
+        conn.close()
+        
+    except psycopg2.Error as e:
+        print(f"❌ 连接 postgres 数据库失败: {e}")
+        return False
+    
+    # 5. 尝试直接连接 jessedb
+    print("\n4️⃣ 尝试直接连接 jessedb 数据库...")
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        print("✅ 成功连接到 jessedb 数据库")
+        
+        # 查询版本信息
+        cursor.execute("SELECT version();")
+        version = cursor.fetchone()[0]
+        print(f"数据库版本: {version[:80]}...")
+        
+        cursor.close()
+        conn.close()
+        return True
+        
+    except psycopg2.Error as e:
+        print(f"❌ 连接 jessedb 失败: {e}")
+        print(f"错误代码: {e.pgcode if hasattr(e, 'pgcode') else '未知'}")
+        return False
 
 def quick_test():
     """快速测试数据库连接和基本操作"""
@@ -88,7 +175,7 @@ def check_test_table():
         conn.set_client_encoding('UTF8')
         cursor = conn.cursor()
         
-        print("\n📋 检查 jesse_db 中的 test_table 数据...")
+        print("\n📋 检查 jessedb 中的 test_table 数据...")
         cursor.execute("""
             SELECT name, LEFT(description, 30) as desc_preview, created_at 
             FROM test_table 
@@ -115,6 +202,15 @@ def check_test_table():
 if __name__ == "__main__":
     print("=" * 50)
     print("Jesse DB PostgreSQL 快速测试")
+    print("=" * 50)
+    
+    # 首先诊断数据库问题
+    if not diagnose_database():
+        print("\n❌ 数据库诊断发现问题，请查看上述信息")
+        sys.exit(1)
+    
+    print("\n" + "=" * 50)
+    print("开始运行功能测试")
     print("=" * 50)
     
     # 运行快速测试

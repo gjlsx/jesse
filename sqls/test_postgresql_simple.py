@@ -12,7 +12,7 @@ import sys
 DB_CONFIG = {
     'host': 'localhost',
     'port': 5432,
-    'database': 'jesse_db',  # 改为测试 jesse_db
+    'database': 'jessedb',  # 改为测试 jesse_db
     'user': 'wind',
     'password': 'gj'
 }

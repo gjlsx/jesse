@@ -1,0 +1,49 @@
+{
+  "exchanges": {
+    "binance": {
+      "name": "binance",
+      "api_key": "",
+      "api_secret": "",
+      "api_passphrase": "",
+      "testnet": true,
+      "proxy": "",
+      "enabled": false
+    },
+    "okx": {
+      "name": "okx",
+      "api_key": "",
+      "api_secret": "",
+      "api_passphrase": "",
+      "testnet": true,
+      "proxy": "",
+      "enabled": false
+    }
+  },
+  "risk": {
+    "max_position_size": 0.1,
+    "max_daily_loss": 0.05,
+    "max_drawdown": 0.2,
+    "stop_loss_percentage": 0.02,
+    "take_profit_percentage": 0.04,
+    "max_orders_per_minute": 10,
+    "min_order_amount": 10.0,
+    "enabled": true
+  },
+  "notifications": {
+    "email_enabled": false,
+    "email_smtp_server": "",
+    "email_smtp_port": 587,
+    "email_username": "",
+    "email_password": "",
+    "email_to": "",
+    "telegram_enabled": false,
+    "telegram_bot_token": "",
+    "telegram_chat_id": "",
+    "webhook_enabled": false,
+    "webhook_url": ""
+  },
+  "tradingview_webhook_port": 9001,
+  "tradingview_webhook_secret": "",
+  "log_level": "INFO",
+  "auto_start": false
+}

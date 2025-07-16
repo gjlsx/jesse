@@ -170,6 +170,8 @@ jesse run
 
 - [⚡️ 官网](https://jesse.trade)
 - [🎓 文档](https://docs.jesse.trade)
+- [🧪 测试指南](doc/testing.md) - 测试环境配置和运行指南
+- [🏗️ 存储系统详解](doc/storeinfo.md) - Jesse 存储和缓存系统详解
 - [🎥 YouTube 频道（屏幕录制教程）](https://jesse.trade/youtube)
 - [🛟 帮助中心](https://jesse.trade/help)
 - [💬 Discord 社区](https://jesse.trade/discord)
